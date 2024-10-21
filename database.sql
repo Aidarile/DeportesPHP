@@ -1,5 +1,3 @@
--- 5a. Crear el modelo y la conexion a la BBDD --
-
 CREATE DATABASE deportes_db;
 
 USE deportes_db;

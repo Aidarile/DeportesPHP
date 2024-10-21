@@ -1,6 +1,5 @@
 <?php
 
-//5b. Crear el modelo y la conexion a la BBDD
 
 class Database {
     public function __construct (

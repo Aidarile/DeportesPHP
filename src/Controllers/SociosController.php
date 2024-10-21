@@ -1,7 +1,5 @@
 <?php
 
-//3. Crear el controlador para cada endpoint
-
 class SociosController {
 
     public function __construct(private SociosGateway $gatewaySocios) {
@@ -18,35 +16,91 @@ class SociosController {
         }
     }
 
-//4. Separar el proceso de Resource y Collection
-
 private function processResourceRequest(string $method, string $id): void {
+    $socio = $this -> gatewaySocios -> getSocio($id);
+        if (!$socio) {
+            http_response_code(404);
+            echo json_encode(["message" => "Socio con id {$id} no encontrado"]);
+            return;
+        }
+        switch ($method) {
+            case "GET":
+                echo json_encode($socio);
+                break;
+            case "PATCH":
+                $data = (array) json_decode(file_get_contents("php://input"), true);
+                $errors = $this -> getValidationErrors($data, false);
+                if (!empty($errors)) {
+                    http_response_code(422);
+                    echo json_encode(["errors" => $errors]);
+                    break;
+                }
+                $rows = $this -> gatewaySocios -> updateSocio ($socio, $data);
 
+                echo json_encode([
+                    "message" => "Socio con id {$id} actualizado",
+                    "rows" => $rows 
+                ]);
+                break;
+            case "DELETE":
+                $rows = $this -> gatewaySocios -> deleteSocio($id);
+                echo json_encode([
+                    "message" => "Socio con id {$id} eliminado",
+                    "rows" => "Han sido eliminadas {$rows} filas"]);
+                break;
+            default:
+                http_response_code(405);
+                header("Allow: GET, POST");
+                break;
+    }
 }
     
 private function processCollectionRequest(string $method) {
     switch ($method) {
         case "GET":
-            echo json_encode($this -> gateway -> getAll());
-        break;
-
+            echo json_encode($this -> gatewaySocios -> getAllSocio());
+            break;
+            
         case "POST":
-            $data = (array) json_decode (file_get_contents("php://input"), true);
+            $data = (array) json_decode (file_get_contents("php://input",true));
 
-            $id = $this -> gateway -> create($data);
-            http_response_code(201); //<- se ha creado el elemento
+            $errors = $this -> getValidationErrors($data);
+            if (!empty ($errors)) {
+                http_response_code(422);    //unprocesable entity
+                echo json_encode($errors);
+                break; 
+            }
+
+            $id = $this -> gatewaySocios -> createSocio ($data);
+            http_response_code(201);  // "201" significa "OK/objeto creado"
             echo json_encode([
                 "message" => "Socio creado",
                 "id" => $id
             ]);
-        break;
+            break;
 
         default:
-            http_response_code(405); //<- metodo no permitido
-            header("Allow: GET, POST");  //<- informa de las opciones disponibles
-        break;
+            http_response_code(405);
+            header("Allow: GET, POST"); // para indicar que sólo están permitidos esos dos metodos
+            break;
     }
+
 }
+
+private function getValidationErrors(array $data, bool $is_new = true) : array
+     {
+        $errors = [];
+
+        if ($is_new && (isset($data["nombre"]) || empty($data["nombre"]))) {
+            $errors[]= "El nombre es obligatorio";  
+        }
+        if (array_key_exists("edad", $data)) {
+            if (filter_var($data["edad"], FILTER_VALIDATE_INT) === false) {
+                $errors[] = "El campo 'edad' debe ser un Entero";
+            }
+        }
+        return $errors;
+    }
     
 }
 
