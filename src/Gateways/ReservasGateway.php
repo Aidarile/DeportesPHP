@@ -19,11 +19,10 @@ class ReservasGateway {
     }
 
     public function createReserva(array $data):string {
-        $sql = "INSERT INTO reserva (id, socio, pista, fecha, hora, iluminar)
-        VALUES (:id, :socio, :pista, :fecha, :hora, :iluminar)";
+        $sql = "INSERT INTO reserva (socio, pista, fecha, hora, iluminar)
+        VALUES (:socio, :pista, :fecha, :hora, :iluminar)";
 
         $stmt = $this -> con -> prepare($sql);
-        $stmt -> bindValue(":id", $data["id"], PDO::PARAM_INT);
         $stmt -> bindValue(":socio", $data["socio"], PDO::PARAM_INT);
         $stmt -> bindValue(":pista", $data["pista"], PDO::PARAM_INT);
         $stmt -> bindValue(":fecha", $data["fecha"], PDO::PARAM_STR);

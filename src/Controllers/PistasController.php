@@ -74,7 +74,7 @@ private function processCollectionRequest(string $method) {
             $id = $this -> gatewayPistas -> createPista ($data);
             http_response_code(201);  // "201" significa "OK/objeto creado"
             echo json_encode([
-                "message" => "Pista creado",
+                "message" => "Pista creada",
                 "id" => $id
             ]);
             break;
@@ -90,12 +90,20 @@ private function getValidationErrors(array $data, bool $is_new = true) : array
      {
         $errors = [];
 
-        if ($is_new && (isset($data["nombre"]) || empty($data["nombre"]))) {
-            $errors[]= "El nombre es obligatorio";  
+        if ($is_new && (!isset($data["nombre"]) || empty($data["nombre"]))) {
+            $errors[]= "El nombre de la pista es obligatorio";  
+        }
+        if ($is_new && (!isset($data["tipo"]) || empty($data["tipo"]))) {
+            $errors[]= "El tipo de pista es obligatorio";  
         }
         if (array_key_exists("max_jugadores", $data)) {
             if (filter_var($data["max_jugadores"], FILTER_VALIDATE_INT) === false) {
-                $errors[] = "El campo 'max_jugadores' debe ser un Entero";
+                $errors[] = "El campo 'max_jugadores' debe ser un entero";
+            }
+        }
+        if (array_key_exists("disponible", $data)) {
+            if (filter_var($data["disponible"], FILTER_VALIDATE_BOOL) === false) {
+                $errors[] = "La pista debe estar disponible para poder reservarla";
             }
         }
         return $errors;

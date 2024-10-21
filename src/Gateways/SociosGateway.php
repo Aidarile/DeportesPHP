@@ -20,7 +20,7 @@ class SociosGateway {
 
     public function createSocio(array $data):string {
         $sql = "INSERT INTO socio (nombre, telefono, edad, penalizado)
-        VALUES (:nombre, :telefono, edad, :penalizado)";
+        VALUES (:nombre, :telefono, :edad, :penalizado)";
 
         $stmt = $this -> con -> prepare($sql);
         $stmt -> bindValue(":nombre", $data["nombre"], PDO::PARAM_STR);

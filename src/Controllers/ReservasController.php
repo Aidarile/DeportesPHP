@@ -2,8 +2,9 @@
 
 class ReservasController {
 
-    public function __construct(private ReservasGateway $gatewayReservas) {
 
+
+    public function __construct(private ReservasGateway $gatewayReservas) {
     }
 
     public function processRequestReservas(string $method, ?string $id) {
@@ -91,14 +92,13 @@ private function getValidationErrors(array $data, bool $is_new = true) : array
  {
     $errors = [];
 
-    if ($is_new && (isset($data["id"]) || empty($data["id"]))) {
+    if ($is_new && (!isset($data["socio"]) || empty($data["socio"]))) {
         $errors[]= "El id de la pista es obligatorio";  
     }
-    if (array_key_exists("id", $data)) {
-        if (filter_var($data["id"], FILTER_VALIDATE_INT) === false) {
-            $errors[] = "El campo 'id' debe ser un Entero";
-        }
+    if ($is_new && (!isset($data["pista"]) || empty($data["pista"]))) {
+        $errors[]= "El id de la pista es obligatorio";  
     }
+    
     return $errors;
 }
     
