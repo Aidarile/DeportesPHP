@@ -89,14 +89,23 @@ private function processCollectionRequest(string $method) {
 
 private function getValidationErrors(array $data, bool $is_new = true) : array
      {
-        $errors = [];
-
-        if ($is_new && (isset($data["nombre"]) || empty($data["nombre"]))) {
-            $errors[]= "El nombre es obligatorio";  
+        if($is_new && (!isset($data["nombre"]) || empty($data["nombre"])) ){
+            $errors[] = "El nombre es obligatorio";
         }
-        if (array_key_exists("edad", $data)) {
-            if (filter_var($data["edad"], FILTER_VALIDATE_INT) === false) {
-                $errors[] = "El campo 'edad' debe ser un Entero";
+        if($is_new && (!isset($data["telefono"]) || empty($data["telefono"])) ){
+            $errors[] = "El telefono es obligatorio";
+        }
+        if(array_key_exists("edad",$data)){
+           if(filter_var($data["edad"], FILTER_VALIDATE_INT) ===false){
+            $errors[] = "El campo edad debe ser de tipo entero";
+           }
+        }
+        if(isset($data["penalizado"]) && !is_bool($data["penalizado"])){
+            $errors[]="El campo penalizado debe se ser true o false";
+        }
+        else if(array_key_exists("penalizado", $data)){
+            if (!is_bool($data["penalizado"])){
+                $errors[] = "El socio debe estar penalizado (true) o no (false)";
             }
         }
         return $errors;

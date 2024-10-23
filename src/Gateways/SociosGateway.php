@@ -61,7 +61,7 @@ class SociosGateway {
         $sql = "UPDATE socio SET nombre = :nombre, telefono = :telefono, edad = :edad, penalizado = :penalizado
         WHERE id = :id";
         $stmt = $this -> con -> prepare($sql);
-        $stmt -> bindValue(":name", $new["name"] ?? $current["name"], PDO::PARAM_STR);
+        $stmt -> bindValue(":nombre", $new["nombre"] ?? $current["nombre"], PDO::PARAM_STR);
         $stmt -> bindValue(":telefono", $new["telefono"] ?? $current["telefono"], PDO::PARAM_STR);
         $stmt -> bindValue(":edad", $new["edad"] ?? $current["edad"], PDO::PARAM_INT);
         $stmt -> bindValue(":penalizado", $new["penalizado"] ?? $current["penalizado"], PDO::PARAM_BOOL);

@@ -28,8 +28,8 @@ class ReservasGateway {
         $stmt -> bindValue(":fecha", $data["fecha"], PDO::PARAM_STR);
         $stmt -> bindValue(":hora", $data["hora"], PDO::PARAM_INT);
 
-        $stmt -> bindValue(":iluminar",
-        (bool)$data["iluminar"]?? false, PDO::PARAM_BOOL);
+        $stmt -> bindValue(":iluminar", isset($data["iluminar"]) ? (bool)$data["iluminar"] : false, PDO::PARAM_BOOL);
+
 
         $stmt -> execute();
         return $this -> con -> lastInsertId();
@@ -75,3 +75,4 @@ class ReservasGateway {
 }
 
 ?>
+
