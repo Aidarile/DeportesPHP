@@ -58,18 +58,18 @@ class PistasGateway {
     }
 
     public function updatePista(array $current, array $new): int {
-        $sql = "UPDATE pista SET nombre = :nombre, tipo, max_jugadores = :max_jugadores, disponible = :disponible
-        WHERE id = :id";
-        $stmt = $this -> con -> prepare($sql);
-        $stmt -> bindValue(":nombre", $new["nombre"] ?? $current["nombre"], PDO::PARAM_STR);
-        $stmt -> bindValue(":tipo", $new["tipo"] ?? $current["tipo"], PDO::PARAM_STR);
-        $stmt -> bindValue(":max_jugadores", $new["max_jugadores"] ?? $current["max_jugadores"], PDO::PARAM_INT);
-        $stmt -> bindValue(":disponible", $new["disponible"] ?? $current["disponible"], PDO::PARAM_BOOL);
-
-        $stmt -> bindValue(":id", $current["id"], PDO::PARAM_INT);
-        $stmt -> execute();
-        return $stmt -> rowCount();
+        $sql = "UPDATE pista SET nombre = ?, max_jugadores = ?, disponible = ? WHERE id = ?";
+        
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindValue(1, $new["nombre"] ?? $current["nombre"], PDO::PARAM_STR);
+        $stmt->bindValue(2, $new["max_jugadores"] ?? $current["max_jugadores"], PDO::PARAM_INT);
+        $stmt->bindValue(3, isset($new["disponible"]) ? (bool) $new["disponible"] : (bool) $current["disponible"], PDO::PARAM_BOOL);
+        $stmt->bindValue(4, $current["id"], PDO::PARAM_INT);
+    
+        $stmt->execute();
+        return $stmt->rowCount();
     }
+    
 }
 
 

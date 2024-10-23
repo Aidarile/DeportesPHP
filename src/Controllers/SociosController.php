@@ -89,6 +89,8 @@ private function processCollectionRequest(string $method) {
 
 private function getValidationErrors(array $data, bool $is_new = true) : array
      {
+        $errors = [];
+        
         if($is_new && (!isset($data["nombre"]) || empty($data["nombre"])) ){
             $errors[] = "El nombre es obligatorio";
         }
